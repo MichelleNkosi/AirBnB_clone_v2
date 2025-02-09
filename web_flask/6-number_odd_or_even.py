@@ -1,5 +1,9 @@
 #!/usr/bin/python3
+"""
+Flask web application with multiple routes
+"""
 from flask import Flask, render_template
+
 app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
@@ -12,26 +16,26 @@ def hbnb():
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
-    return "C {}".format(text.replace('_', ' '))
+    return f"C {text.replace('_', ' ')}"
 
 @app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
 def python_text(text):
-    return "Python {}".format(text.replace('_', ' '))
+    return f"Python {text.replace('_', ' ')}"
 
 @app.route('/number/<int:n>', strict_slashes=False)
 def number(n):
-    return "{} is a number".format(n)
+    return f"{n} is a number"
 
 @app.route('/number_template/<int:n>', strict_slashes=False)
 def number_template(n):
-    return render_template('6-number.html', number=n)
+    return render_template('6-number_odd_or_even.html', n=n)
 
 @app.route('/number_odd_or_even/<int:n>', strict_slashes=False)
 def number_odd_or_even(n):
-    even_or_odd = "even" if n % 2 == 0 else "odd"
-    return render_template('6-number_odd_or_even.html', number=n, even_or_odd=even_or_odd)
+    odd_or_even = "even" if n % 2 == 0 else "odd"
+    return render_template('6-number_odd_or_even.html', n=n, odd_or_even=odd_or_even)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
 

@@ -1,27 +1,29 @@
-# models/state.py
+#!/usr/bin/python3
+"""Module for the State class."""
 
-from models import storage
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 from models.city import City
+import models
+from os import getenv
+
 
 class State(BaseModel, Base):
-    # existing code...
+    """Representation of a state."""
 
-    if storage._FileStorage__storage_type == "fs":
-        @property
-        def cities(self):
-            """Returns the list of City objects linked to the current State"""
-            from models.city import City
-            cities_list = []
-            for city in storage.all(City).values():
-                if city.state_id == self.id:
-                    cities_list.append(city)
-            return cities_list
+    __tablename__ = "states"
+    name = Column(String(128), nullable=False)
+
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        cities = relationship("City", backref="state", cascade="all, delete-orphan")
     else:
         @property
         def cities(self):
-            """Returns the list of City objects linked to the current State"""
-            cities_list = []
-            for city in self.cities:
-                cities_list.append(city)
-            return cities_list
+            """Getter method to retrieve City instances linked to the current State."""
+            city_list = []
+            for city in models.storage.all(City).values():
+                if city.state_id == self.id:
+                    city_list.append(city)
+            return city_list
 
